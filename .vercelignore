@@ -1,0 +1,47 @@
+# Dependencies
+node_modules
+npm-debug.log
+yarn-error.log
+
+# Environment
+.env.local
+.env*.local
+
+# Development
+.next
+out
+*.log
+
+# Testing
+coverage
+.nyc_output
+
+# Build artifacts
+build
+dist
+*.tsbuildinfo
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Smart contracts (already deployed)
+contracts
+artifacts
+cache
+hardhat.config.js
+scripts
+
+# Documentation (optional - can include if you want)
+# *.md
+
+# Git
+.git
+.gitignore
