@@ -87,10 +87,6 @@ export default function Home() {
             <span className="text-xs text-green-500">● IPFS</span>
           </div>
           <div className="flex items-center gap-3 ml-12 lg:ml-0">
-            <div className="hidden sm:flex items-center gap-2 bg-gray-900 px-3 py-1 rounded border border-gray-700 text-xs">
-              <span>Product Hunt</span>
-              <span className="bg-orange-500 px-2 py-1 rounded">183</span>
-            </div>
             <WalletConnect />
           </div>
         </div>
