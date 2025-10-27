@@ -1,17 +1,20 @@
-export const POLYGON_MUMBAI_CONFIG = {
-  chainId: 80001,
-  name: 'Polygon Mumbai',
-  currency: 'MATIC',
-  explorerUrl: 'https://mumbai.polygonscan.com',
-  rpcUrl: process.env.NEXT_PUBLIC_POLYGON_RPC_URL || 'https://rpc-mumbai.maticvigil.com',
-};
-
 export const POLYGON_MAINNET_CONFIG = {
   chainId: 137,
   name: 'Polygon',
   currency: 'MATIC',
   explorerUrl: 'https://polygonscan.com',
   rpcUrl: 'https://polygon-rpc.com',
+};
+
+// Active configuration (using Mainnet)
+export const ACTIVE_POLYGON_CONFIG = POLYGON_MAINNET_CONFIG;
+
+export const POLYGON_MUMBAI_CONFIG = {
+  chainId: 80001,
+  name: 'Polygon Mumbai',
+  currency: 'MATIC',
+  explorerUrl: 'https://mumbai.polygonscan.com',
+  rpcUrl: process.env.NEXT_PUBLIC_POLYGON_RPC_URL || 'https://rpc-mumbai.maticvigil.com',
 };
 
 export const SOLANA_DEVNET_CONFIG = {

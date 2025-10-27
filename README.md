@@ -25,7 +25,7 @@ A decentralized Web3 bookmarking and learning platform built on **Polygon** (for
 
 ### Storage & Infrastructure
 - **IPFS/Pinata**: Decentralized storage for rich content and encrypted messages
-- **Polygon Mumbai Testnet**: Smart contracts deployment
+- **Polygon Mainnet**: Smart contracts deployment
 - **Supabase** (Optional): Off-chain caching for better UX
 
 ## 🏗️ Tech Stack
