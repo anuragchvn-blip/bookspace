@@ -2,8 +2,8 @@
 
 import { WagmiProvider, createConfig, http } from 'wagmi';
 import { polygonAmoy } from 'wagmi/chains';
-import { QueryClient, QueryClientProvider } from '@tantml:invoke>
-<invoke name="RainbowKitProvider, getDefaultConfig } from '@rainbow-me/rainbowkit';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { RainbowKitProvider, getDefaultConfig } from '@rainbow-me/rainbowkit';
 import '@rainbow-me/rainbowkit/styles.css';
 
 const config = getDefaultConfig({

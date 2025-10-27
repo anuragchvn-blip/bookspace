@@ -14,7 +14,7 @@ export default function MessagesPage() {
   const [messageText, setMessageText] = useState('');
   const [recipientAddress, setRecipientAddress] = useState('');
   
-  const { purchaseDMAccess, checkDMAccess, isLoading } = useDirectMessages();
+  const { purchaseAccess, checkAccess, isLoading } = useDirectMessages();
 
   const handleUnlockDM = async () => {
     if (!recipientAddress) {
@@ -22,7 +22,7 @@ export default function MessagesPage() {
       return;
     }
     try {
-      await purchaseDMAccess(recipientAddress);
+        await purchaseAccess(recipientAddress);
       alert('DM access unlocked! You can now message this user.');
     } catch (error: any) {
       alert(`Failed to unlock: ${error.message}`);
