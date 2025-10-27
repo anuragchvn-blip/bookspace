@@ -32,12 +32,13 @@ dist
 .DS_Store
 Thumbs.db
 
-# Smart contracts (already deployed)
-contracts
+# Smart contracts (already deployed - Solidity files only)
+/contracts/*.sol
+/contracts/**/*.sol
 artifacts
 cache
 hardhat.config.js
-scripts
+scripts/deploy-polygon.ts
 
 # Documentation (optional - can include if you want)
 # *.md
