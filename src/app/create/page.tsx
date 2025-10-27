@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, Suspense } from 'react';
+import { useState, Suspense, useEffect } from 'react';
 import { useAccount } from 'wagmi';
 import { useBookmarks, useSpaces } from '@/hooks/useBookmarks';
 import { WalletConnect } from '@/components/WalletConnect';
@@ -17,7 +17,7 @@ function CreatePageContent() {
   
   const { address } = useAccount();
   const { createBookmark, isLoading: isBookmarkLoading } = useBookmarks();
-  const { createSpace, userSpaceIds, isLoading: isSpaceLoading } = useSpaces();
+  const { createSpace, userSpaceIds, isLoading: isSpaceLoading, refetchSpaces } = useSpaces();
 
   const [formData, setFormData] = useState({
     // Bookmark fields
@@ -33,6 +33,13 @@ function CreatePageContent() {
   });
 
   const isLoading = isBookmarkLoading || isSpaceLoading;
+
+  // Refetch spaces when switching to bookmark creation
+  useEffect(() => {
+    if (type === 'bookmark' && address) {
+      refetchSpaces();
+    }
+  }, [type, address, refetchSpaces]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,14 +57,16 @@ function CreatePageContent() {
     try {
       if (type === 'bookmark') {
         // Check if user has any spaces
-        if (userSpaceIds.length === 0) {
+        const hasSpaces = userSpaceIds && Array.isArray(userSpaceIds) && userSpaceIds.length > 0;
+        
+        if (!hasSpaces) {
           toast.error('Please create a space first before adding bookmarks');
           router.push('/create?type=space');
           return;
         }
         
         const tags = formData.tags.split(',').map(t => t.trim()).filter(Boolean);
-        const spaceId = userSpaceIds.length > 0 ? Number(userSpaceIds[0]) : 1;
+        const spaceId = Number(userSpaceIds[0]);
         
         await createBookmark(
           formData.url,
@@ -68,6 +77,9 @@ function CreatePageContent() {
           '' // IPFS hash - can be empty string
         );
         toast.success('Bookmark created successfully!');
+        
+        // Wait a bit before redirecting to ensure state updates
+        await new Promise(resolve => setTimeout(resolve, 1000));
         router.push('/dashboard');
       } else {
         await createSpace(
@@ -76,8 +88,11 @@ function CreatePageContent() {
           formData.isPublic,
           formData.accessPrice
         );
-        toast.success('Space created successfully!');
-        router.push('/dashboard');
+        toast.success('Space created successfully! You can now add bookmarks.');
+        
+        // Wait a bit before redirecting to ensure blockchain state updates
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        router.push('/create?type=bookmark');
       }
     } catch (error: any) {
       console.error('Creation error:', error);

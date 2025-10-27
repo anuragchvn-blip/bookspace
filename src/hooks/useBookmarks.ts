@@ -28,6 +28,8 @@ export function useBookmarks() {
     args: address ? [address] : undefined,
     query: {
       enabled: !!(CONTRACT_ADDR && address), // Only run query if both are set
+      refetchOnMount: 'always', // Always refetch when component mounts
+      staleTime: 0, // Consider data immediately stale
     },
   });
 
@@ -130,6 +132,8 @@ export function useSpaces() {
     args: address ? [address] : undefined,
     query: {
       enabled: !!(CONTRACT_ADDR && address), // Only run query if both are set
+      refetchOnMount: 'always', // Always refetch when component mounts
+      staleTime: 0, // Consider data immediately stale
     },
   });
 
@@ -154,7 +158,10 @@ export function useSpaces() {
         args: [name, description, isPublic, parseEther(accessPrice)],
       });
       
+      // Wait a moment for blockchain state to update
+      await new Promise(resolve => setTimeout(resolve, 2000));
       await refetchSpaces();
+      
       return hash;
     } finally {
       setIsLoading(false);
