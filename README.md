@@ -5,7 +5,11 @@
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.4-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
-A decentralized Web3 bookmarking and learning platform built on **Polygon** (for main features) and **Solana** (for micropayments and tips). BookSpace allows users to save, organize, and monetize their knowledge on the blockchain.
+# BookSpace - Decentralized Bookmark Manager
+
+A Web3 platform for creating and managing bookmark spaces on Polygon blockchain with IPFS storage.
+
+**Status:** Live on Vercel 🚀
 
 ## 🌟 Features
 
