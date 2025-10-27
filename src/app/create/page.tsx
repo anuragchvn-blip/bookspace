@@ -7,16 +7,17 @@ import { WalletConnect } from '@/components/WalletConnect';
 import { Bookmark, Plus, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { CONTRACT_ADDRESSES } from '@/config/constants';
 import { toast } from 'react-hot-toast';
 
 export default function CreatePage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const type = searchParams.get('type') || 'bookmark';
+  const type = searchParams.get('type') || 'space'; // Default to space creation
   
   const { address } = useAccount();
   const { createBookmark } = useBookmarks();
-  const { createSpace } = useSpaces();
+  const { createSpace, userSpaceIds } = useSpaces();
 
   const [formData, setFormData] = useState({
     // Bookmark fields
@@ -39,18 +40,30 @@ export default function CreatePage() {
       toast.error('Please connect your wallet');
       return;
     }
-
+    if (!CONTRACT_ADDRESSES.bookmarkRegistry) {
+      toast.error('Contract address not configured. Set NEXT_PUBLIC_BOOKMARK_REGISTRY_ADDRESS in .env.local');
+      return;
+    }
     setIsLoading(true);
     try {
       if (type === 'bookmark') {
+        // Check if user has any spaces
+        if (userSpaceIds.length === 0) {
+          toast.error('Please create a space first before adding bookmarks');
+          router.push('/create?type=space');
+          return;
+        }
+        
         const tags = formData.tags.split(',').map(t => t.trim()).filter(Boolean);
+        const spaceId = userSpaceIds.length > 0 ? Number(userSpaceIds[0]) : 1;
+        
         await createBookmark(
           formData.url,
           formData.title,
           formData.description,
           tags,
-          parseInt(formData.spaceId),
-          '' // IPFS hash - implement upload here
+          spaceId,
+          '' // IPFS hash - can be empty string
         );
         toast.success('Bookmark created successfully!');
         router.push('/dashboard');
@@ -65,7 +78,8 @@ export default function CreatePage() {
         router.push('/dashboard');
       }
     } catch (error: any) {
-      toast.error(error.message || 'Failed to create');
+      console.error('Creation error:', error);
+      toast.error(error.message || error.shortMessage || 'Transaction failed. Please try again.');
     } finally {
       setIsLoading(false);
     }

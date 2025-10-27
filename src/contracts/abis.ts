@@ -5,7 +5,7 @@ export const BOOKMARK_REGISTRY_ABI = [
   "function getBookmark(uint256 _bookmarkId) public view returns (tuple(uint256 id, string url, string title, string description, string[] tags, address owner, uint256 spaceId, uint256 timestamp, string ipfsHash, bool isDeleted))",
   "function getUserBookmarks(address _user) public view returns (uint256[] memory)",
   "function createSpace(string memory _name, string memory _description, bool _isPublic, uint256 _accessPrice) public returns (uint256)",
-  "function joinSpace(uint256 _spaceId) public payable",
+  "function joinSpace(uint256 _spaceId, uint256 _deadline) public payable",
   "function updateSpace(uint256 _spaceId, string memory _name, string memory _description, bool _isPublic, uint256 _accessPrice) public",
   "function getSpace(uint256 _spaceId) public view returns (tuple(uint256 id, string name, string description, address owner, bool isPublic, uint256 accessPrice, uint256 memberCount, uint256 createdAt, bool isActive))",
   "function getSpaceBookmarks(uint256 _spaceId) public view returns (uint256[] memory)",

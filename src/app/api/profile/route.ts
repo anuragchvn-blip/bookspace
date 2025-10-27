@@ -17,6 +17,13 @@ interface ProfileData {
 
 export async function POST(request: NextRequest) {
   try {
+    // Ensure Pinata JWT is configured
+    if (!process.env.NEXT_PUBLIC_PINATA_JWT) {
+      return NextResponse.json(
+        { error: 'Pinata JWT not configured. Set NEXT_PUBLIC_PINATA_JWT in .env.local' },
+        { status: 500 }
+      );
+    }
     const body = await request.json();
     const { address, username, displayName, bio, avatar, twitter, github, website } = body;
 

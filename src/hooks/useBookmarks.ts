@@ -12,6 +12,13 @@ export function useBookmarks() {
   const { address } = useAccount();
   const { writeContractAsync } = useWriteContract();
   const [isLoading, setIsLoading] = useState(false);
+  const CONTRACT_ADDR = CONTRACT_ADDRESSES.bookmarkRegistry;
+
+  function ensureContractAddress() {
+    if (!CONTRACT_ADDR || CONTRACT_ADDR === '') {
+      throw new Error('BookmarkRegistry contract address is not configured. Please set NEXT_PUBLIC_BOOKMARK_REGISTRY_ADDRESS in your .env.local');
+    }
+  }
 
   // Read user bookmarks
   const { data: userBookmarkIds, refetch: refetchBookmarks } = useReadContract({
@@ -30,12 +37,13 @@ export function useBookmarks() {
     spaceId: number,
     ipfsHash: string
   ) => {
-    if (!address) throw new Error('Wallet not connected');
+  if (!address) throw new Error('Wallet not connected');
+  ensureContractAddress();
     
     setIsLoading(true);
     try {
       const hash = await writeContractAsync({
-        address: CONTRACT_ADDRESSES.bookmarkRegistry as `0x${string}`,
+        address: CONTRACT_ADDR as `0x${string}`,
         abi: BOOKMARK_REGISTRY_ABI,
         functionName: 'createBookmark',
         args: [url, title, description, tags, BigInt(spaceId), ipfsHash],
@@ -57,12 +65,13 @@ export function useBookmarks() {
     tags: string[],
     ipfsHash: string
   ) => {
-    if (!address) throw new Error('Wallet not connected');
+  if (!address) throw new Error('Wallet not connected');
+  ensureContractAddress();
     
     setIsLoading(true);
     try {
       const hash = await writeContractAsync({
-        address: CONTRACT_ADDRESSES.bookmarkRegistry as `0x${string}`,
+        address: CONTRACT_ADDR as `0x${string}`,
         abi: BOOKMARK_REGISTRY_ABI,
         functionName: 'updateBookmark',
         args: [BigInt(bookmarkId), url, title, description, tags, ipfsHash],
@@ -77,11 +86,11 @@ export function useBookmarks() {
   // Delete bookmark
   const deleteBookmark = async (bookmarkId: number) => {
     if (!address) throw new Error('Wallet not connected');
-    
+    ensureContractAddress();
     setIsLoading(true);
     try {
       const hash = await writeContractAsync({
-        address: CONTRACT_ADDRESSES.bookmarkRegistry as `0x${string}`,
+        address: CONTRACT_ADDR as `0x${string}`,
         abi: BOOKMARK_REGISTRY_ABI,
         functionName: 'deleteBookmark',
         args: [BigInt(bookmarkId)],

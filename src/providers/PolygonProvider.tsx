@@ -1,15 +1,15 @@
 'use client';
 
 import { WagmiProvider, createConfig, http } from 'wagmi';
-import { polygon } from 'wagmi/chains';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { RainbowKitProvider, getDefaultConfig } from '@rainbow-me/rainbowkit';
+import { polygonAmoy } from 'wagmi/chains';
+import { QueryClient, QueryClientProvider } from '@tantml:invoke>
+<invoke name="RainbowKitProvider, getDefaultConfig } from '@rainbow-me/rainbowkit';
 import '@rainbow-me/rainbowkit/styles.css';
 
 const config = getDefaultConfig({
   appName: 'BookSpace',
   projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || 'YOUR_PROJECT_ID',
-  chains: [polygon],
+  chains: [polygonAmoy],
   ssr: true,
 });
 
