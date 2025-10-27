@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { useAccount } from 'wagmi';
 import { useBookmarks, useSpaces } from '@/hooks/useBookmarks';
 import { WalletConnect } from '@/components/WalletConnect';
@@ -10,7 +10,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { CONTRACT_ADDRESSES } from '@/config/constants';
 import { toast } from 'react-hot-toast';
 
-export default function CreatePage() {
+function CreatePageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const type = searchParams.get('type') || 'space'; // Default to space creation
@@ -326,5 +326,17 @@ export default function CreatePage() {
         </div>
       </main>
     </div>
+  );
+}
+
+export default function CreatePage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin" />
+      </div>
+    }>
+      <CreatePageContent />
+    </Suspense>
   );
 }
