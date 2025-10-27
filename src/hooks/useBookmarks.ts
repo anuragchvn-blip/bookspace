@@ -20,12 +20,15 @@ export function useBookmarks() {
     }
   }
 
-  // Read user bookmarks
+  // Read user bookmarks - only if contract address is set
   const { data: userBookmarkIds, refetch: refetchBookmarks } = useReadContract({
-    address: CONTRACT_ADDRESSES.bookmarkRegistry as `0x${string}`,
+    address: CONTRACT_ADDR as `0x${string}` | undefined,
     abi: BOOKMARK_REGISTRY_ABI,
     functionName: 'getUserBookmarks',
     args: address ? [address] : undefined,
+    query: {
+      enabled: !!(CONTRACT_ADDR && address), // Only run query if both are set
+    },
   });
 
   // Create bookmark
@@ -117,13 +120,17 @@ export function useSpaces() {
   const { address } = useAccount();
   const { writeContractAsync } = useWriteContract();
   const [isLoading, setIsLoading] = useState(false);
+  const CONTRACT_ADDR = CONTRACT_ADDRESSES.bookmarkRegistry;
 
-  // Read user spaces
+  // Read user spaces - only if contract address is set
   const { data: userSpaceIds, refetch: refetchSpaces } = useReadContract({
-    address: CONTRACT_ADDRESSES.bookmarkRegistry as `0x${string}`,
+    address: CONTRACT_ADDR as `0x${string}` | undefined,
     abi: BOOKMARK_REGISTRY_ABI,
     functionName: 'getUserSpaces',
     args: address ? [address] : undefined,
+    query: {
+      enabled: !!(CONTRACT_ADDR && address), // Only run query if both are set
+    },
   });
 
   // Create space
@@ -134,11 +141,14 @@ export function useSpaces() {
     accessPrice: string
   ) => {
     if (!address) throw new Error('Wallet not connected');
+    if (!CONTRACT_ADDR || CONTRACT_ADDR === '') {
+      throw new Error('BookmarkRegistry contract address is not configured. Please set NEXT_PUBLIC_BOOKMARK_REGISTRY_ADDRESS in your .env.local');
+    }
     
     setIsLoading(true);
     try {
       const hash = await writeContractAsync({
-        address: CONTRACT_ADDRESSES.bookmarkRegistry as `0x${string}`,
+        address: CONTRACT_ADDR as `0x${string}`,
         abi: BOOKMARK_REGISTRY_ABI,
         functionName: 'createSpace',
         args: [name, description, isPublic, parseEther(accessPrice)],
@@ -154,6 +164,10 @@ export function useSpaces() {
   // Join space
   const joinSpace = async (spaceId: number, paymentAmount: string) => {
     if (!address) throw new Error('Wallet not connected');
+    const CONTRACT_ADDR = CONTRACT_ADDRESSES.bookmarkRegistry;
+    if (!CONTRACT_ADDR || CONTRACT_ADDR === '') {
+      throw new Error('BookmarkRegistry contract address is not configured');
+    }
     
     setIsLoading(true);
     try {
@@ -161,7 +175,7 @@ export function useSpaces() {
       const deadline = Math.floor(Date.now() / 1000) + 600; // 10 minutes
       
       const hash = await writeContractAsync({
-        address: CONTRACT_ADDRESSES.bookmarkRegistry as `0x${string}`,
+        address: CONTRACT_ADDR as `0x${string}`,
         abi: BOOKMARK_REGISTRY_ABI,
         functionName: 'joinSpace',
         args: [BigInt(spaceId), BigInt(deadline)],
@@ -183,11 +197,15 @@ export function useSpaces() {
     accessPrice: string
   ) => {
     if (!address) throw new Error('Wallet not connected');
+    const CONTRACT_ADDR = CONTRACT_ADDRESSES.bookmarkRegistry;
+    if (!CONTRACT_ADDR || CONTRACT_ADDR === '') {
+      throw new Error('BookmarkRegistry contract address is not configured');
+    }
     
     setIsLoading(true);
     try {
       const hash = await writeContractAsync({
-        address: CONTRACT_ADDRESSES.bookmarkRegistry as `0x${string}`,
+        address: CONTRACT_ADDR as `0x${string}`,
         abi: BOOKMARK_REGISTRY_ABI,
         functionName: 'updateSpace',
         args: [BigInt(spaceId), name, description, isPublic, parseEther(accessPrice)],
@@ -210,11 +228,16 @@ export function useSpaces() {
 }
 
 export function useBookmark(bookmarkId: number) {
+  const CONTRACT_ADDR = CONTRACT_ADDRESSES.bookmarkRegistry;
+  
   const { data: bookmark, refetch } = useReadContract({
-    address: CONTRACT_ADDRESSES.bookmarkRegistry as `0x${string}`,
+    address: CONTRACT_ADDR as `0x${string}` | undefined,
     abi: BOOKMARK_REGISTRY_ABI,
     functionName: 'getBookmark',
     args: [BigInt(bookmarkId)],
+    query: {
+      enabled: !!(CONTRACT_ADDR && bookmarkId), // Only run if contract address exists
+    },
   });
 
   return {
@@ -224,11 +247,16 @@ export function useBookmark(bookmarkId: number) {
 }
 
 export function useSpace(spaceId: number) {
+  const CONTRACT_ADDR = CONTRACT_ADDRESSES.bookmarkRegistry;
+  
   const { data: space, refetch } = useReadContract({
-    address: CONTRACT_ADDRESSES.bookmarkRegistry as `0x${string}`,
+    address: CONTRACT_ADDR as `0x${string}` | undefined,
     abi: BOOKMARK_REGISTRY_ABI,
     functionName: 'getSpace',
     args: [BigInt(spaceId)],
+    query: {
+      enabled: !!(CONTRACT_ADDR && spaceId), // Only run if contract address exists
+    },
   });
 
   return {
