@@ -16,8 +16,8 @@ function CreatePageContent() {
   const type = searchParams.get('type') || 'space'; // Default to space creation
   
   const { address } = useAccount();
-  const { createBookmark } = useBookmarks();
-  const { createSpace, userSpaceIds } = useSpaces();
+  const { createBookmark, isLoading: isBookmarkLoading } = useBookmarks();
+  const { createSpace, userSpaceIds, isLoading: isSpaceLoading } = useSpaces();
 
   const [formData, setFormData] = useState({
     // Bookmark fields
@@ -32,19 +32,21 @@ function CreatePageContent() {
     accessPrice: '0',
   });
 
-  const [isLoading, setIsLoading] = useState(false);
+  const isLoading = isBookmarkLoading || isSpaceLoading;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
     if (!address) {
       toast.error('Please connect your wallet');
       return;
     }
+    
     if (!CONTRACT_ADDRESSES.bookmarkRegistry) {
       toast.error('Contract address not configured. Set NEXT_PUBLIC_BOOKMARK_REGISTRY_ADDRESS in .env.local');
       return;
     }
-    setIsLoading(true);
+    
     try {
       if (type === 'bookmark') {
         // Check if user has any spaces
@@ -80,8 +82,6 @@ function CreatePageContent() {
     } catch (error: any) {
       console.error('Creation error:', error);
       toast.error(error.message || error.shortMessage || 'Transaction failed. Please try again.');
-    } finally {
-      setIsLoading(false);
     }
   };
 
