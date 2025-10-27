@@ -86,9 +86,9 @@ function CreatePageContent() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white flex">
-      {/* Sidebar */}
-      <aside className="w-64 bg-[#0d0d0d] border-r border-gray-800 flex flex-col p-6 fixed h-full">
+    <div className="min-h-screen bg-black text-white flex flex-col lg:flex-row">
+      {/* Sidebar - Hidden on mobile, fixed on desktop */}
+      <aside className="hidden lg:flex lg:w-64 bg-[#0d0d0d] border-r border-gray-800 flex-col p-6 fixed h-full">
         <Link href="/" className="mb-12">
           <h1 className="text-2xl font-bold tracking-wider">BOOKSPACE</h1>
           <p className="text-xs text-gray-500 mt-1">DECENTRALIZED BOOKMARKING</p>
@@ -108,18 +108,29 @@ function CreatePageContent() {
         <WalletConnect />
       </aside>
 
+      {/* Mobile Header */}
+      <div className="lg:hidden bg-[#0d0d0d] border-b border-gray-800 p-4">
+        <div className="flex items-center justify-between mb-3">
+          <Link href="/" className="flex-1">
+            <h1 className="text-xl font-bold tracking-wider">BOOKSPACE</h1>
+            <p className="text-xs text-gray-500">DECENTRALIZED BOOKMARKING</p>
+          </Link>
+        </div>
+        <WalletConnect />
+      </div>
+
       {/* Main Content */}
-      <main className="ml-64 flex-1 p-12">
+      <main className="lg:ml-64 flex-1 p-4 sm:p-6 lg:p-12">
         {/* Header with Typewriter Explanation */}
-        <div className="mb-8 border-l-4 border-yellow-500 pl-6">
-          <div className="font-typewriter text-sm mb-4 text-gray-400">
+        <div className="mb-6 lg:mb-8 border-l-4 border-yellow-500 pl-4 lg:pl-6">
+          <div className="font-typewriter text-xs sm:text-sm mb-3 lg:mb-4 text-gray-400">
             <span className="text-yellow-400">$</span> touch new_{type}.web3
           </div>
-          <h1 className="text-5xl font-bold mb-3 text-yellow-400">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-2 lg:mb-3 text-yellow-400">
             Create {type === 'bookmark' ? 'Bookmark' : 'Space'}
           </h1>
-          <div className="bg-black/40 border border-gray-800 rounded p-4 max-w-2xl mt-4">
-            <div className="font-typewriter text-sm text-gray-300">
+          <div className="bg-black/40 border border-gray-800 rounded p-3 lg:p-4 max-w-2xl mt-3 lg:mt-4">
+            <div className="font-typewriter text-xs sm:text-sm text-gray-300">
               <div className="text-yellow-400 mb-2">
                 {`// ${type === 'bookmark' ? 'Why create bookmarks on-chain?' : 'Why create premium spaces?'}`}
               </div>
@@ -133,17 +144,17 @@ function CreatePageContent() {
         </div>
 
         {/* Form Card */}
-        <div className="bg-black/40 border-2 border-gray-800 p-8 max-w-3xl">
+        <div className="bg-black/40 border-2 border-gray-800 p-4 sm:p-6 lg:p-8 max-w-3xl">
           {/* Tab Switcher */}
-          <div className="flex gap-2 mb-8 border-b border-gray-800 pb-4">
+          <div className="flex flex-col sm:flex-row gap-2 mb-6 lg:mb-8 border-b border-gray-800 pb-4">
             <div className="flex items-center gap-2 mb-2">
-              <div className="h-px w-8 bg-cyan-400"></div>
+              <div className="h-px w-6 sm:w-8 bg-cyan-400"></div>
               <span className="text-xs text-gray-500 font-mono tracking-wider">TYPE</span>
             </div>
-            <div className="flex gap-2 ml-4">
+            <div className="flex gap-2 sm:ml-4 w-full sm:w-auto">
               <button
                 onClick={() => router.push('/create?type=bookmark')}
-                className={`px-6 py-2 font-bold transition-colors border-2 ${
+                className={`flex-1 sm:flex-none px-4 sm:px-6 py-2 text-sm sm:text-base font-bold transition-colors border-2 ${
                   type === 'bookmark'
                     ? 'bg-yellow-500 text-black border-yellow-600'
                     : 'border-gray-600 text-gray-400 hover:border-yellow-500 hover:text-yellow-400'
@@ -153,7 +164,7 @@ function CreatePageContent() {
               </button>
               <button
                 onClick={() => router.push('/create?type=space')}
-                className={`px-6 py-2 font-bold transition-colors border-2 ${
+                className={`flex-1 sm:flex-none px-4 sm:px-6 py-2 text-sm sm:text-base font-bold transition-colors border-2 ${
                   type === 'space'
                     ? 'bg-yellow-500 text-black border-yellow-600'
                     : 'border-gray-600 text-gray-400 hover:border-yellow-500 hover:text-yellow-400'
@@ -296,27 +307,27 @@ function CreatePageContent() {
               </>
             )}
 
-            <div className="flex gap-4 pt-6 border-t border-gray-800">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-6 border-t border-gray-800">
               <button
                 type="button"
                 onClick={() => router.back()}
-                className="flex-1 px-6 py-4 border-2 border-gray-600 text-gray-300 font-bold hover:border-gray-500 transition-colors"
+                className="w-full sm:flex-1 px-4 sm:px-6 py-3 sm:py-4 border-2 border-gray-600 text-gray-300 font-bold hover:border-gray-500 transition-colors text-sm sm:text-base"
               >
                 CANCEL
               </button>
               <button
                 type="submit"
                 disabled={isLoading || !address}
-                className="flex-1 px-6 py-4 bg-yellow-500 text-black font-bold hover:bg-yellow-400 transition-colors border-2 border-yellow-600 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="w-full sm:flex-1 px-4 sm:px-6 py-3 sm:py-4 bg-yellow-500 text-black font-bold hover:bg-yellow-400 transition-colors border-2 border-yellow-600 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm sm:text-base"
               >
                 {isLoading ? (
                   <>
-                    <Loader2 className="w-5 h-5 animate-spin" />
+                    <Loader2 className="w-4 sm:w-5 h-4 sm:h-5 animate-spin" />
                     CREATING...
                   </>
                 ) : (
                   <>
-                    <Plus className="w-5 h-5" />
+                    <Plus className="w-4 sm:w-5 h-4 sm:h-5" />
                     CREATE {type === 'bookmark' ? 'BOOKMARK' : 'SPACE'}
                   </>
                 )}

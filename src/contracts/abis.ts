@@ -1,43 +1,141 @@
 export const BOOKMARK_REGISTRY_ABI = [
-  "function createBookmark(string memory _url, string memory _title, string memory _description, string[] memory _tags, uint256 _spaceId, string memory _ipfsHash) public returns (uint256)",
-  "function updateBookmark(uint256 _bookmarkId, string memory _url, string memory _title, string memory _description, string[] memory _tags, string memory _ipfsHash) public",
-  "function deleteBookmark(uint256 _bookmarkId) public",
-  "function getBookmark(uint256 _bookmarkId) public view returns (tuple(uint256 id, string url, string title, string description, string[] tags, address owner, uint256 spaceId, uint256 timestamp, string ipfsHash, bool isDeleted))",
-  "function getUserBookmarks(address _user) public view returns (uint256[] memory)",
-  "function createSpace(string memory _name, string memory _description, bool _isPublic, uint256 _accessPrice) public returns (uint256)",
-  "function joinSpace(uint256 _spaceId, uint256 _deadline) public payable",
-  "function updateSpace(uint256 _spaceId, string memory _name, string memory _description, bool _isPublic, uint256 _accessPrice) public",
-  "function getSpace(uint256 _spaceId) public view returns (tuple(uint256 id, string name, string description, address owner, bool isPublic, uint256 accessPrice, uint256 memberCount, uint256 createdAt, bool isActive))",
-  "function getSpaceBookmarks(uint256 _spaceId) public view returns (uint256[] memory)",
-  "function getUserSpaces(address _user) public view returns (uint256[] memory)",
-  "function checkSpaceAccess(address _user, uint256 _spaceId) public view returns (bool)",
-  "function isSpaceMember(uint256 _spaceId, address _user) public view returns (bool)",
-  "function getTotalBookmarks() public view returns (uint256)",
-  "function getTotalSpaces() public view returns (uint256)",
-  "event BookmarkCreated(uint256 indexed id, address indexed owner, uint256 indexed spaceId, string url, uint256 timestamp)",
-  "event BookmarkUpdated(uint256 indexed id, string url, string title, uint256 timestamp)",
-  "event BookmarkDeleted(uint256 indexed id, address indexed owner)",
-  "event SpaceCreated(uint256 indexed id, address indexed owner, string name, bool isPublic, uint256 accessPrice)",
-  "event SpaceJoined(uint256 indexed spaceId, address indexed member, uint256 paidAmount)",
-  "event SpaceUpdated(uint256 indexed id, string name, string description, uint256 accessPrice)"
+  {
+    "inputs": [
+      { "internalType": "string", "name": "_url", "type": "string" },
+      { "internalType": "string", "name": "_title", "type": "string" },
+      { "internalType": "string", "name": "_description", "type": "string" },
+      { "internalType": "string[]", "name": "_tags", "type": "string[]" },
+      { "internalType": "uint256", "name": "_spaceId", "type": "uint256" },
+      { "internalType": "string", "name": "_ipfsHash", "type": "string" }
+    ],
+    "name": "createBookmark",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "string", "name": "_name", "type": "string" },
+      { "internalType": "string", "name": "_description", "type": "string" },
+      { "internalType": "bool", "name": "_isPublic", "type": "bool" },
+      { "internalType": "uint256", "name": "_accessPrice", "type": "uint256" }
+    ],
+    "name": "createSpace",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "_spaceId", "type": "uint256" },
+      { "internalType": "uint256", "name": "_deadline", "type": "uint256" }
+    ],
+    "name": "joinSpace",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "_bookmarkId", "type": "uint256" }
+    ],
+    "name": "deleteBookmark",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "_bookmarkId", "type": "uint256" },
+      { "internalType": "string", "name": "_url", "type": "string" },
+      { "internalType": "string", "name": "_title", "type": "string" },
+      { "internalType": "string", "name": "_description", "type": "string" },
+      { "internalType": "string[]", "name": "_tags", "type": "string[]" },
+      { "internalType": "string", "name": "_ipfsHash", "type": "string" }
+    ],
+    "name": "updateBookmark",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "_user", "type": "address" }
+    ],
+    "name": "getUserBookmarks",
+    "outputs": [{ "internalType": "uint256[]", "name": "", "type": "uint256[]" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "_user", "type": "address" }
+    ],
+    "name": "getUserSpaces",
+    "outputs": [{ "internalType": "uint256[]", "name": "", "type": "uint256[]" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getTotalBookmarks",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getTotalSpaces",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  }
 ] as const;
 
 export const DM_REGISTRY_ABI = [
-  "function purchaseDMAccess(address _recipient) public payable",
-  "function sendMessage(address _recipient, string memory _ipfsHash) public returns (uint256)",
-  "function checkDMAccess(address _sender, address _recipient) public view returns (bool)",
-  "function getDMAccess(address _sender, address _recipient) public view returns (tuple(address sender, address recipient, uint256 paidAt, bool isActive))",
-  "function getMessage(uint256 _messageId) public view returns (tuple(uint256 id, address sender, address recipient, string ipfsHash, uint256 timestamp))",
-  "function getInbox(address _user) public view returns (uint256[] memory)",
-  "function getSentMessages(address _user) public view returns (uint256[] memory)",
-  "function getConversation(address _user1, address _user2) public view returns (uint256[] memory)",
-  "function getConversationHash(address _user1, address _user2) public pure returns (bytes32)",
-  "function revokeDMAccess(address _recipient) public",
-  "function getTotalMessages() public view returns (uint256)",
-  "function getInboxCount(address _user) public view returns (uint256)",
-  "function getSentCount(address _user) public view returns (uint256)",
-  "function DM_ACCESS_PRICE() public view returns (uint256)",
-  "event DMAccessGranted(address indexed sender, address indexed recipient, uint256 paidAmount, uint256 timestamp)",
-  "event MessageSent(uint256 indexed messageId, address indexed sender, address indexed recipient, string ipfsHash, uint256 timestamp)",
-  "event AccessRevoked(address indexed sender, address indexed recipient, uint256 timestamp)"
+  {
+    "inputs": [
+      { "internalType": "address", "name": "_recipient", "type": "address" }
+    ],
+    "name": "purchaseDMAccess",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "_recipient", "type": "address" },
+      { "internalType": "string", "name": "_ipfsHash", "type": "string" }
+    ],
+    "name": "sendMessage",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "_sender", "type": "address" },
+      { "internalType": "address", "name": "_recipient", "type": "address" }
+    ],
+    "name": "checkDMAccess",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "_user", "type": "address" }
+    ],
+    "name": "getInbox",
+    "outputs": [{ "internalType": "uint256[]", "name": "", "type": "uint256[]" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "DM_ACCESS_PRICE",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  }
 ] as const;
