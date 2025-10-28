@@ -132,6 +132,28 @@ export async function uploadBookmarkContent(
 }
 
 /**
+ * Upload space content to IPFS
+ */
+export async function uploadSpaceContent(
+  name: string,
+  description: string,
+  isPublic: boolean,
+  accessPrice: string,
+  additionalData?: any
+): Promise<IPFSUploadResult> {
+  const spaceData = {
+    name,
+    description,
+    isPublic,
+    accessPrice,
+    ...additionalData,
+    timestamp: Date.now(),
+  };
+
+  return uploadToIPFS(spaceData);
+}
+
+/**
  * Pin file to IPFS via Pinata
  */
 export async function pinFileToIPFS(file: File): Promise<IPFSUploadResult> {

@@ -9,6 +9,7 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { CONTRACT_ADDRESSES } from '@/config/constants';
 import { toast } from 'react-hot-toast';
+import { uploadBookmarkContent, uploadSpaceContent } from '@/lib/ipfs';
 
 function CreatePageContent() {
   const router = useRouter();
@@ -68,13 +69,33 @@ function CreatePageContent() {
         const tags = formData.tags.split(',').map(t => t.trim()).filter(Boolean);
         const spaceId = Number(userSpaceIds[0]);
         
+        // Upload bookmark metadata to IPFS first
+        toast.loading('Uploading to IPFS...', { id: 'ipfs-upload' });
+        let ipfsHash = '';
+        
+        try {
+          const ipfsResult = await uploadBookmarkContent(
+            formData.url,
+            formData.title,
+            formData.description,
+            tags
+          );
+          ipfsHash = ipfsResult.ipfsHash;
+          toast.success('Uploaded to IPFS!', { id: 'ipfs-upload' });
+        } catch (error) {
+          console.warn('IPFS upload failed, continuing without it:', error);
+          toast.dismiss('ipfs-upload');
+          // Continue without IPFS if it fails (ipfsHash will be empty string)
+        }
+        
+        // Save to blockchain
         await createBookmark(
           formData.url,
           formData.title,
           formData.description,
           tags,
           spaceId,
-          '' // IPFS hash - can be empty string
+          ipfsHash // Now includes actual IPFS hash if upload succeeded
         );
         toast.success('Bookmark created successfully!');
         
@@ -82,6 +103,24 @@ function CreatePageContent() {
         await new Promise(resolve => setTimeout(resolve, 1000));
         router.push('/dashboard');
       } else {
+        // Upload space metadata to IPFS
+        toast.loading('Uploading to IPFS...', { id: 'ipfs-upload' });
+        
+        try {
+          await uploadSpaceContent(
+            formData.name,
+            formData.description,
+            formData.isPublic,
+            formData.accessPrice
+          );
+          toast.success('Uploaded to IPFS!', { id: 'ipfs-upload' });
+        } catch (error) {
+          console.warn('IPFS upload failed, continuing without it:', error);
+          toast.dismiss('ipfs-upload');
+          // Continue without IPFS if it fails
+        }
+        
+        // Save to blockchain
         await createSpace(
           formData.name,
           formData.description,
