@@ -231,6 +231,7 @@ function BookmarkCardWrapper({ bookmarkId }: { bookmarkId: number }) {
     spaceId: Number(bookmark.spaceId || bookmark[6]),
     timestamp: Number(bookmark.timestamp || bookmark[7]),
     ipfsHash: String(bookmark.ipfsHash || bookmark[8] || ''),
+    isDeleted: Boolean(bookmark.isDeleted || bookmark[9] || false),
   };
 
   return (
