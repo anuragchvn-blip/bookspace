@@ -177,10 +177,26 @@ export const BOOKMARK_REGISTRY_ABI = [
   }
 ] as const;
 
+// DirectMessageRegistry ABI (v1.4 - Security Hardened)
 export const DM_REGISTRY_ABI = [
   {
+    "inputs": [],
+    "name": "VERSION",
+    "outputs": [{ "internalType": "string", "name": "", "type": "string" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "DM_ACCESS_PRICE",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
-      { "internalType": "address", "name": "_recipient", "type": "address" }
+      { "internalType": "address", "name": "_recipient", "type": "address" },
+      { "internalType": "uint256", "name": "_deadline", "type": "uint256" }
     ],
     "name": "purchaseDMAccess",
     "outputs": [],
@@ -209,6 +225,28 @@ export const DM_REGISTRY_ABI = [
   },
   {
     "inputs": [
+      { "internalType": "uint256", "name": "_messageId", "type": "uint256" }
+    ],
+    "name": "getMessage",
+    "outputs": [
+      {
+        "components": [
+          { "internalType": "uint256", "name": "id", "type": "uint256" },
+          { "internalType": "address", "name": "sender", "type": "address" },
+          { "internalType": "address", "name": "recipient", "type": "address" },
+          { "internalType": "string", "name": "ipfsHash", "type": "string" },
+          { "internalType": "uint256", "name": "timestamp", "type": "uint256" }
+        ],
+        "internalType": "struct DirectMessageRegistry.Message",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
       { "internalType": "address", "name": "_user", "type": "address" }
     ],
     "name": "getInbox",
@@ -217,9 +255,56 @@ export const DM_REGISTRY_ABI = [
     "type": "function"
   },
   {
+    "inputs": [
+      { "internalType": "address", "name": "_user1", "type": "address" },
+      { "internalType": "address", "name": "_user2", "type": "address" }
+    ],
+    "name": "getConversation",
+    "outputs": [{ "internalType": "uint256[]", "name": "", "type": "uint256[]" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "string", "name": "_hash", "type": "string" }
+    ],
+    "name": "isValidIPFSHash",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "stateMutability": "pure",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "_sender", "type": "address" }
+    ],
+    "name": "blockSender",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [],
-    "name": "DM_ACCESS_PRICE",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "name": "platformOwner",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "isPaused",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getContractStats",
+    "outputs": [
+      { "internalType": "uint256", "name": "totalMessages", "type": "uint256" },
+      { "internalType": "uint256", "name": "revenue", "type": "uint256" },
+      { "internalType": "uint256", "name": "accessPrice", "type": "uint256" },
+      { "internalType": "bool", "name": "paused", "type": "bool" }
+    ],
     "stateMutability": "view",
     "type": "function"
   }
