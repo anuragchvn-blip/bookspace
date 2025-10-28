@@ -29,6 +29,7 @@ export function useBookmarks() {
     query: {
       enabled: !!(CONTRACT_ADDR && address), // Only run query if both are set
       refetchOnMount: 'always', // Always refetch when component mounts
+      refetchInterval: 3000, // Refetch every 3 seconds for real-time updates
       staleTime: 0, // Consider data immediately stale
     },
   });
@@ -133,6 +134,7 @@ export function useSpaces() {
     query: {
       enabled: !!(CONTRACT_ADDR && address), // Only run query if both are set
       refetchOnMount: 'always', // Always refetch when component mounts
+      refetchInterval: 3000, // Refetch every 3 seconds for real-time updates
       staleTime: 0, // Consider data immediately stale
     },
   });
@@ -158,6 +160,8 @@ export function useSpaces() {
     
     setIsLoading(true);
     try {
+      console.log('Creating space with args:', { name, description, isPublic, accessPrice });
+      
       const hash = await writeContractAsync({
         address: CONTRACT_ADDR as `0x${string}`,
         abi: BOOKMARK_REGISTRY_ABI,
@@ -165,9 +169,33 @@ export function useSpaces() {
         args: [name, description, isPublic, parseEther(accessPrice)],
       });
       
-      // Wait a moment for blockchain state to update
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      await refetchSpaces();
+      console.log('Transaction submitted, hash:', hash);
+      console.log('Waiting for blockchain confirmation...');
+      
+      // Wait for transaction to be mined (this is the key!)
+      // Use a simple polling approach instead of wagmi hook
+      let confirmed = false;
+      let attempts = 0;
+      const maxAttempts = 30; // 30 seconds max wait
+      
+      while (!confirmed && attempts < maxAttempts) {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        attempts++;
+        
+        // Force refetch to check if space was created
+        const result = await refetchSpaces();
+        console.log('Refetch attempt', attempts, '- userSpaceIds:', result.data);
+        
+        // Check if we got new spaces
+        if (result.data && Array.isArray(result.data) && result.data.length > 0) {
+          confirmed = true;
+          console.log('✅ Space confirmed on blockchain!');
+        }
+      }
+      
+      if (!confirmed) {
+        console.warn('Transaction may still be pending after 30s');
+      }
       
       return hash;
     } finally {
@@ -296,6 +324,8 @@ export function useSpace(spaceId: number) {
     args: [BigInt(spaceId)],
     query: {
       enabled: !!(CONTRACT_ADDR && spaceId), // Only run if contract address exists
+      refetchInterval: 3000, // Refetch every 3 seconds
+      staleTime: 0,
     },
   });
 
