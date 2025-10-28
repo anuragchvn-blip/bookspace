@@ -167,6 +167,7 @@ export function useSpaces() {
         abi: BOOKMARK_REGISTRY_ABI,
         functionName: 'createSpace',
         args: [name, description, isPublic, parseEther(accessPrice)],
+        gas: 500000n, // Explicit gas limit to prevent estimation errors
       });
       
       console.log('Transaction submitted, hash:', hash);

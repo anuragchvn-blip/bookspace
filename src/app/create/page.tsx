@@ -127,12 +127,21 @@ function CreatePageContent() {
         }
         
         // Save to blockchain
-        await createSpace(
+        console.log('Calling createSpace with:', {
+          name: formData.name,
+          description: formData.description,
+          isPublic: formData.isPublic,
+          accessPrice: formData.accessPrice
+        });
+        
+        const hash = await createSpace(
           formData.name,
           formData.description,
           formData.isPublic,
           formData.accessPrice
         );
+        
+        console.log('✅ Space created! Transaction hash:', hash);
         toast.success('Space created successfully! You can now add bookmarks.');
         
         // Wait a bit before redirecting to ensure blockchain state updates
