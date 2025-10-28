@@ -301,6 +301,7 @@ export function useSpace(spaceId: number) {
 
   // Debug logging
   console.log('useSpace - spaceId:', spaceId);
+  console.log('useSpace - CONTRACT_ADDR:', CONTRACT_ADDR);
   console.log('useSpace - raw data:', space);
   console.log('useSpace - isLoading:', isLoading);
   console.log('useSpace - error:', error);
@@ -308,6 +309,7 @@ export function useSpace(spaceId: number) {
   // Convert the tuple data to proper Space object
   let parsedSpace: Space | null = null;
   if (space && Array.isArray(space)) {
+    console.log('useSpace - space is array, length:', space.length);
     parsedSpace = {
       id: Number(space[0]),
       name: space[1],
@@ -320,6 +322,8 @@ export function useSpace(spaceId: number) {
       isActive: space[8],
     };
     console.log('useSpace - parsed space:', parsedSpace);
+  } else {
+    console.log('useSpace - space is NOT an array or is null/undefined');
   }
 
   return {
