@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useAccount } from 'wagmi';
-import { useBookmarks, useSpaces } from '@/hooks/useBookmarks';
+import { useBookmarks, useSpaces, useSpace, useBookmark } from '@/hooks/useBookmarks';
 import { WalletConnect, ConnectWalletButton } from '@/components/WalletConnect';
 import { BookmarkCard, BookmarkGrid, EmptyBookmarks } from '@/components/BookmarkCard';
 import { SpaceCard, SpaceGrid } from '@/components/SpaceCard';
@@ -206,9 +206,58 @@ function StatCard({ label, value }: { label: string; value: number }) {
 }
 
 function BookmarkCardWrapper({ bookmarkId }: { bookmarkId: number }) {
-  return null;
+  const { bookmark } = useBookmark(bookmarkId);
+  const { address } = useAccount();
+
+  if (!bookmark) return null;
+
+  return (
+    <BookmarkCard
+      bookmark={{
+        id: bookmark.id,
+        url: bookmark.url,
+        title: bookmark.title,
+        description: bookmark.description,
+        tags: bookmark.tags,
+        owner: bookmark.owner,
+        spaceId: bookmark.spaceId,
+        timestamp: bookmark.timestamp,
+        ipfsHash: bookmark.ipfsHash,
+      }}
+      isOwner={bookmark.owner === address}
+    />
+  );
 }
 
 function SpaceCardWrapper({ spaceId }: { spaceId: number }) {
-  return null;
+  const { space } = useSpace(spaceId);
+  const { address } = useAccount();
+
+  if (!space) {
+    return (
+      <div className="bg-black/40 border border-gray-800 p-6 animate-pulse">
+        <div className="h-6 bg-gray-800 rounded mb-4"></div>
+        <div className="h-4 bg-gray-800 rounded mb-2"></div>
+        <div className="h-4 bg-gray-800 rounded w-2/3"></div>
+      </div>
+    );
+  }
+
+  return (
+    <SpaceCard
+      space={{
+        id: space.id,
+        name: space.name,
+        description: space.description,
+        owner: space.owner,
+        isPublic: space.isPublic,
+        accessPrice: space.accessPrice,
+        memberCount: space.memberCount,
+        createdAt: space.createdAt,
+        isActive: space.isActive,
+      }}
+      isOwner={space.owner === address}
+      isMember={true}
+    />
+  );
 }
