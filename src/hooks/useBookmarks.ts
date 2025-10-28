@@ -125,7 +125,7 @@ export function useSpaces() {
   const CONTRACT_ADDR = CONTRACT_ADDRESSES.bookmarkRegistry;
 
   // Read user spaces - only if contract address is set
-  const { data: userSpaceIds, refetch: refetchSpaces } = useReadContract({
+  const { data: userSpaceIds, refetch: refetchSpaces, error: spacesError, isLoading: isLoadingSpaces } = useReadContract({
     address: CONTRACT_ADDR as `0x${string}` | undefined,
     abi: BOOKMARK_REGISTRY_ABI,
     functionName: 'getUserSpaces',
@@ -141,6 +141,8 @@ export function useSpaces() {
   console.log('useSpaces - address:', address);
   console.log('useSpaces - CONTRACT_ADDR:', CONTRACT_ADDR);
   console.log('useSpaces - userSpaceIds:', userSpaceIds);
+  console.log('useSpaces - error:', spacesError);
+  console.log('useSpaces - isLoading:', isLoadingSpaces);
 
   // Create space
   const createSpace = async (
