@@ -15,6 +15,12 @@ export default function Dashboard() {
   const { userSpaceIds } = useSpaces();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  // Debug logging
+  console.log('Dashboard - Connected:', isConnected);
+  console.log('Dashboard - Address:', address);
+  console.log('Dashboard - userSpaceIds:', userSpaceIds);
+  console.log('Dashboard - userBookmarkIds:', userBookmarkIds);
+
   if (!isConnected) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center p-4">
@@ -209,22 +215,28 @@ function BookmarkCardWrapper({ bookmarkId }: { bookmarkId: number }) {
   const { bookmark } = useBookmark(bookmarkId);
   const { address } = useAccount();
 
+  console.log('BookmarkCardWrapper - bookmarkId:', bookmarkId);
+  console.log('BookmarkCardWrapper - bookmark data:', bookmark);
+
   if (!bookmark) return null;
+
+  // Convert data properly, handling both object and array responses
+  const bookmarkData = {
+    id: Number(bookmark.id || bookmark[0]),
+    url: String(bookmark.url || bookmark[1]),
+    title: String(bookmark.title || bookmark[2]),
+    description: String(bookmark.description || bookmark[3]),
+    tags: Array.isArray(bookmark.tags) ? bookmark.tags : (bookmark[4] || []),
+    owner: String(bookmark.owner || bookmark[5]),
+    spaceId: Number(bookmark.spaceId || bookmark[6]),
+    timestamp: Number(bookmark.timestamp || bookmark[7]),
+    ipfsHash: String(bookmark.ipfsHash || bookmark[8] || ''),
+  };
 
   return (
     <BookmarkCard
-      bookmark={{
-        id: bookmark.id,
-        url: bookmark.url,
-        title: bookmark.title,
-        description: bookmark.description,
-        tags: bookmark.tags,
-        owner: bookmark.owner,
-        spaceId: bookmark.spaceId,
-        timestamp: bookmark.timestamp,
-        ipfsHash: bookmark.ipfsHash,
-      }}
-      isOwner={bookmark.owner === address}
+      bookmark={bookmarkData}
+      isOwner={bookmarkData.owner.toLowerCase() === address?.toLowerCase()}
     />
   );
 }
@@ -232,6 +244,9 @@ function BookmarkCardWrapper({ bookmarkId }: { bookmarkId: number }) {
 function SpaceCardWrapper({ spaceId }: { spaceId: number }) {
   const { space } = useSpace(spaceId);
   const { address } = useAccount();
+
+  console.log('SpaceCardWrapper - spaceId:', spaceId);
+  console.log('SpaceCardWrapper - space data:', space);
 
   if (!space) {
     return (
@@ -243,20 +258,25 @@ function SpaceCardWrapper({ spaceId }: { spaceId: number }) {
     );
   }
 
+  // Convert BigInt values properly
+  const spaceData = {
+    id: Number(space.id || space[0]),
+    name: String(space.name || space[1]),
+    description: String(space.description || space[2]),
+    owner: String(space.owner || space[3]),
+    isPublic: Boolean(space.isPublic !== undefined ? space.isPublic : space[4]),
+    accessPrice: BigInt(space.accessPrice !== undefined ? space.accessPrice : space[5]),
+    memberCount: Number(space.memberCount !== undefined ? space.memberCount : space[6]),
+    createdAt: Number(space.createdAt !== undefined ? space.createdAt : space[7]),
+    isActive: Boolean(space.isActive !== undefined ? space.isActive : space[8]),
+  };
+
+  console.log('SpaceCardWrapper - formatted space:', spaceData);
+
   return (
     <SpaceCard
-      space={{
-        id: space.id,
-        name: space.name,
-        description: space.description,
-        owner: space.owner,
-        isPublic: space.isPublic,
-        accessPrice: space.accessPrice,
-        memberCount: space.memberCount,
-        createdAt: space.createdAt,
-        isActive: space.isActive,
-      }}
-      isOwner={space.owner === address}
+      space={spaceData}
+      isOwner={spaceData.owner.toLowerCase() === address?.toLowerCase()}
       isMember={true}
     />
   );

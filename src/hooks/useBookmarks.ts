@@ -137,6 +137,11 @@ export function useSpaces() {
     },
   });
 
+  // Debug logging
+  console.log('useSpaces - address:', address);
+  console.log('useSpaces - CONTRACT_ADDR:', CONTRACT_ADDR);
+  console.log('useSpaces - userSpaceIds:', userSpaceIds);
+
   // Create space
   const createSpace = async (
     name: string,
@@ -237,7 +242,7 @@ export function useSpaces() {
 export function useBookmark(bookmarkId: number) {
   const CONTRACT_ADDR = CONTRACT_ADDRESSES.bookmarkRegistry;
   
-  const { data: bookmark, refetch } = useReadContract({
+  const { data: bookmark, refetch, isLoading, error } = useReadContract({
     address: CONTRACT_ADDR as `0x${string}` | undefined,
     abi: BOOKMARK_REGISTRY_ABI,
     functionName: 'getBookmark',
@@ -247,16 +252,42 @@ export function useBookmark(bookmarkId: number) {
     },
   });
 
+  // Debug logging
+  console.log('useBookmark - bookmarkId:', bookmarkId);
+  console.log('useBookmark - raw data:', bookmark);
+  console.log('useBookmark - isLoading:', isLoading);
+  console.log('useBookmark - error:', error);
+
+  // Convert the tuple data to proper Bookmark object
+  let parsedBookmark: Bookmark | null = null;
+  if (bookmark && Array.isArray(bookmark)) {
+    parsedBookmark = {
+      id: Number(bookmark[0]),
+      url: bookmark[1],
+      title: bookmark[2],
+      description: bookmark[3],
+      tags: bookmark[4],
+      owner: bookmark[5],
+      spaceId: Number(bookmark[6]),
+      timestamp: Number(bookmark[7]),
+      ipfsHash: bookmark[8],
+      isDeleted: bookmark[9],
+    };
+    console.log('useBookmark - parsed bookmark:', parsedBookmark);
+  }
+
   return {
-    bookmark: bookmark as unknown as Bookmark,
+    bookmark: parsedBookmark,
     refetch,
+    isLoading,
+    error,
   };
 }
 
 export function useSpace(spaceId: number) {
   const CONTRACT_ADDR = CONTRACT_ADDRESSES.bookmarkRegistry;
   
-  const { data: space, refetch } = useReadContract({
+  const { data: space, refetch, isLoading, error } = useReadContract({
     address: CONTRACT_ADDR as `0x${string}` | undefined,
     abi: BOOKMARK_REGISTRY_ABI,
     functionName: 'getSpace',
@@ -266,8 +297,33 @@ export function useSpace(spaceId: number) {
     },
   });
 
+  // Debug logging
+  console.log('useSpace - spaceId:', spaceId);
+  console.log('useSpace - raw data:', space);
+  console.log('useSpace - isLoading:', isLoading);
+  console.log('useSpace - error:', error);
+
+  // Convert the tuple data to proper Space object
+  let parsedSpace: Space | null = null;
+  if (space && Array.isArray(space)) {
+    parsedSpace = {
+      id: Number(space[0]),
+      name: space[1],
+      description: space[2],
+      owner: space[3],
+      isPublic: space[4],
+      accessPrice: space[5],
+      memberCount: Number(space[6]),
+      createdAt: Number(space[7]),
+      isActive: space[8],
+    };
+    console.log('useSpace - parsed space:', parsedSpace);
+  }
+
   return {
-    space: space as unknown as Space,
+    space: parsedSpace,
     refetch,
+    isLoading,
+    error,
   };
 }

@@ -50,8 +50,14 @@ function CreatePageContent() {
       return;
     }
     
-    if (!CONTRACT_ADDRESSES.bookmarkRegistry) {
-      toast.error('Contract address not configured. Set NEXT_PUBLIC_BOOKMARK_REGISTRY_ADDRESS in .env.local');
+    const contractAddr = CONTRACT_ADDRESSES.bookmarkRegistry;
+    console.log('Contract address:', contractAddr);
+    console.log('Form data:', formData);
+    
+    if (!contractAddr || contractAddr === '') {
+      toast.error('⚠️ Contract address not configured!\n\nAdd NEXT_PUBLIC_BOOKMARK_REGISTRY_ADDRESS to Vercel environment variables.\n\nCheck console for details.');
+      console.error('Missing environment variable: NEXT_PUBLIC_BOOKMARK_REGISTRY_ADDRESS');
+      console.error('Current value:', process.env.NEXT_PUBLIC_BOOKMARK_REGISTRY_ADDRESS);
       return;
     }
     
